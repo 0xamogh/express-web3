@@ -5,7 +5,7 @@ const { is } = require('express/lib/request');
 var web3 = new Web3();
 
 var pk;
-const ipfs = create('ipfs.infura.io', '5001', {protocol: 'https'})
+const ipfs = create('https://ipfs.io')
 
 function accessLog(req, res, next) {
   const { hostname, method, path, ip, protocol } = req;
@@ -21,7 +21,7 @@ function errorLog(err, req, res, next) {
 }
 
 async function web3api(req, res, next){
-    console.log("🚀 ~ file: index.js ~ line 24 ~ web3api ~ res", res)
+
     // does all 5 functions for the request
     const md5 = generateMD5Hash(res);
     const sign = signMD5Hash(md5);
@@ -32,6 +32,8 @@ async function web3api(req, res, next){
         const cid = await uploadToIPFS(md5)
         res.setHeader('IPFS-CID', cid);
     }
+
+    next()
 }
 
 function configureWeb3(privateKey){
@@ -49,11 +51,11 @@ function signMD5Hash(data){
 
     if(pk != null){
         // have to understnad structure of response object
-        const output = web3.eth.accounts.sign(data, pk);
+        const {signature} = web3.eth.accounts.sign(data, pk);
+        return signature
     } else {
         res.status(500).send({status: 'server-error', message: 'express-web3 is not correctly configured'})
     }
-    return output.signature
 }
 
 function isValidPK(){

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const {web3api, configureWeb3} = require("./middleware");
+const {web3api, configureWeb3, errorLog} = require("./middleware");
 
 // enable dot env
 // dw this is a sample pk lol
