@@ -1,6 +1,7 @@
 const Web3 = require('web3')
 const md5 = require('md5');
-const { create } = require('ipfs-http-client')
+const { create } = require('ipfs-http-client');
+const { is } = require('express/lib/request');
 var web3 = new Web3();
 
 var pk;
@@ -19,8 +20,18 @@ function errorLog(err, req, res, next) {
   res.status(500).send({ status: "server-error", message: err.message });
 }
 
-function web3api(req, res, next){
+async function web3api(req, res, next){
+    console.log("🚀 ~ file: index.js ~ line 24 ~ web3api ~ res", res)
     // does all 5 functions for the request
+    const md5 = generateMD5Hash(res);
+    const sign = signMD5Hash(md5);
+    res.setHeader('MD5Hash', md5);
+    res.setHeader('Web3Signature', sign); 
+    // confirm if the md5 or the actual data is to be uploaded
+    if(res.isPrivate){
+        const cid = await uploadToIPFS(md5)
+        res.setHeader('IPFS-CID', cid);
+    }
 }
 
 function configureWeb3(privateKey){
@@ -34,16 +45,20 @@ function generateMD5Hash(response){
 }
 
 // should have checks for correct length of pk and verify that it is a good pk
-function signatureThatSignsMD5Hash(req, res, next){
-    //check config 
+function signMD5Hash(data){
+
     if(pk != null){
         // have to understnad structure of response object
-        const [message, messagHash, v,r ,s , signature] = web3.eth.accounts.sign(res.something, pk);
+        const output = web3.eth.accounts.sign(data, pk);
     } else {
         res.status(500).send({status: 'server-error', message: 'express-web3 is not correctly configured'})
     }
+    return output.signature
 }
 
+function isValidPK(){
+
+}
 async function uploadToIPFS(data){
     try {
         const { cid } = ipfs.add(data); 
