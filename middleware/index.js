@@ -34,7 +34,7 @@ function generateMD5Hash(response){
 }
 
 // should have checks for correct length of pk and verify that it is a good pk
-function signatureThatSignsMD5Hash(req,res, next){
+function signatureThatSignsMD5Hash(req, res, next){
     //check config 
     if(pk != null){
         // have to understnad structure of response object
@@ -46,7 +46,7 @@ function signatureThatSignsMD5Hash(req,res, next){
 
 async function uploadToIPFS(data){
     try {
-        const {cid} = ipfs.add(data); 
+        const { cid } = ipfs.add(data); 
     } catch (err) {
         console.log('Upload to IPFS failed', err);
     }
