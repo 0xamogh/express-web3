@@ -1,0 +1,28 @@
+{
+  "name": "express-web3",
+  "version": "1.0.0",
+  "description": "A middleware for express to enable trustless data to and from the blockchain",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xamogh/express-web3.git"
+  },
+  "keywords": [
+    "web3"
+  ],
+  "author": "Amogh Jahagirdar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0xamogh/express-web3/issues"
+  },
+  "homepage": "https://github.com/0xamogh/express-web3#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "ipfs-http-client": "^56.0.1",
+    "md5": "^2.3.0",
+    "web3": "^1.7.0"
+  }
+}
