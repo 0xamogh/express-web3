@@ -28,7 +28,7 @@ async function web3api(req, res, next){
     res.setHeader('MD5Hash', md5);
     res.setHeader('Web3Signature', sign); 
     // confirm if the md5 or the actual data is to be uploaded
-    if(res.isPrivate){
+    if(true){
         const cid = await uploadToIPFS(md5)
         res.setHeader('IPFS-CID', cid);
     }
@@ -48,27 +48,30 @@ function generateMD5Hash(response){
 
 // should have checks for correct length of pk and verify that it is a good pk
 function signMD5Hash(data){
-
+    var signature;
     if(pk != null){
         // have to understnad structure of response object
-        const {signature} = web3.eth.accounts.sign(data, pk);
-        return signature
+        const output = web3.eth.accounts.sign(data, pk);
+        signature = output.signature;
     } else {
         res.status(500).send({status: 'server-error', message: 'express-web3 is not correctly configured'})
     }
+    return signature
 }
 
 function isValidPK(){
 
 }
 async function uploadToIPFS(data){
+    var cid;
     try {
-        const { cid } = ipfs.add(data); 
+        const output = ipfs.add(data); 
+        console.log("🚀 ~ file: index.js ~ line 70 ~ uploadToIPFS ~ output", output)
+        cid = output.cid;
     } catch (err) {
-        console.log('Upload to IPFS failed', err);
+        console.error('Upload to IPFS failed', err);
     }
-
-    return cid;
+    return cid
 }
 
 module.exports = { accessLog, errorLog, web3api, configureWeb3 };
