@@ -19,14 +19,15 @@ function errorLog(err, req, res, next) {
   res.status(500).send({ status: "server-error", message: err.message });
 }
 
+function web3api(req, res, next){
+    // does all 5 functions for the request
+}
+
 function configureWeb3(privateKey){
     // probably should encrypt this somehow
     pk = privateKey;
 }
 
-function web3api(req, res, next){
-    // does all 5 functions for the request
-}
 
 function generateMD5Hash(response){
     return md5(response);
