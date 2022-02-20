@@ -23,7 +23,7 @@ function errorLog(err, req, res, next) {
 async function web3api(req, res, next){
 
     // does all 5 functions for the request
-    const md5 = generateMD5Hash(res);
+    const md5 = generateMD5Hash(req.query.text);
     const sign = signMD5Hash(md5);
     res.setHeader('MD5Hash', md5);
     res.setHeader('Web3Signature', sign); 
@@ -33,7 +33,7 @@ async function web3api(req, res, next){
         res.setHeader('IPFS-CID', cid);
     }
 
-    next()
+    // next()
 }
 
 function configureWeb3(privateKey){
@@ -65,7 +65,7 @@ function isValidPK(){
 async function uploadToIPFS(data){
     var cid;
     try {
-        const output = ipfs.add(data); 
+        const output = await ipfs.add(data); 
         console.log("🚀 ~ file: index.js ~ line 70 ~ uploadToIPFS ~ output", output)
         cid = output.cid;
     } catch (err) {
