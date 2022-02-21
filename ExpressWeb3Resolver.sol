@@ -3,8 +3,12 @@ pragma v0.8.7;
 //adding smart contract here for reference, testing and deploys will happen in a seperate repo
 contract ExpressWeb3Resolver {
 
-    function resolve(string calldata ipfsHash) public returns (uint256 requestId){
+    uint256 currentRequestId = 0;
+    mapping(uint256 => string) public hashmap;
 
+    function resolve(string calldata ipfsHash) public returns (uint256 requestId){
+        hashmap[currentRequestId] = ipfsHash;
+        currentRequestId++;
     }
 
     // keccak and compare
