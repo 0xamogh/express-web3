@@ -5,7 +5,7 @@ const { is } = require('express/lib/request');
 var web3 = new Web3();
 
 var pk;
-const ipfs = create();
+var ipfs;
 
 function accessLog(req, res, next) {
   const { hostname, method, path, ip, protocol } = req;
@@ -29,7 +29,6 @@ async function web3api(req, res, next){
     // confirm if the md5 or the actual data is to be uploaded
 
     if(!(req.query.isPrivate.toLowerCase() === 'true')){
-
         const cid = await uploadToIPFS(md5)
         res.setHeader('IPFS-CID', cid);
     }
@@ -37,9 +36,10 @@ async function web3api(req, res, next){
     next()
 }
 
-function configureWeb3(privateKey){
+function configureWeb3(privateKey, ipfsGateway){
     // probably should encrypt this somehow
     pk = privateKey;
+    ipfs = create(ipfsGateway);
 }
 
 
@@ -51,7 +51,6 @@ function generateMD5Hash(response){
 function signMD5Hash(data){
     var signature;
     if(pk != null){
-        // have to understnad structure of response object
         const output = web3.eth.accounts.sign(data, pk);
         signature = output.signature;
     } else {
