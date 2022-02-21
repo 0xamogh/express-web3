@@ -11,9 +11,9 @@ const asyncHandler = fn => (req, res, next) => {
      fn(req, res, next)
      .catch(next);
 }   
-// app.use(web3api);
+app.use(web3api);
 
-app.get('/', asyncHandler(web3api), (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send(`Hello from ${req.hostname}`);
 });
 

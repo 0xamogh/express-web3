@@ -5,7 +5,7 @@ const { is } = require('express/lib/request');
 var web3 = new Web3();
 
 var pk;
-const ipfs = create('https://ipfs.io')
+const ipfs = create();
 
 function accessLog(req, res, next) {
   const { hostname, method, path, ip, protocol } = req;
@@ -22,18 +22,19 @@ function errorLog(err, req, res, next) {
 
 async function web3api(req, res, next){
 
-    // does all 5 functions for the request
     const md5 = generateMD5Hash(req.query.text);
     const sign = signMD5Hash(md5);
     res.setHeader('MD5Hash', md5);
     res.setHeader('Web3Signature', sign); 
     // confirm if the md5 or the actual data is to be uploaded
-    if(true){
+
+    if(!(req.query.isPrivate.toLowerCase() === 'true')){
+
         const cid = await uploadToIPFS(md5)
         res.setHeader('IPFS-CID', cid);
     }
 
-    // next()
+    next()
 }
 
 function configureWeb3(privateKey){
@@ -65,8 +66,8 @@ function isValidPK(){
 async function uploadToIPFS(data){
     var cid;
     try {
+        const id  = ipfs.id()
         const output = await ipfs.add(data); 
-        console.log("🚀 ~ file: index.js ~ line 70 ~ uploadToIPFS ~ output", output)
         cid = output.cid;
     } catch (err) {
         console.error('Upload to IPFS failed', err);
