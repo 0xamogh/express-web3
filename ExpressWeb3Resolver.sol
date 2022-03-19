@@ -8,6 +8,8 @@ contract ExpressWeb3Resolver {
 
     function resolve(string calldata ipfsHash) public returns (uint256 requestId){
         hashmap[currentRequestId] = ipfsHash;
+        //call chainlink contract here
+        
         currentRequestId++;
     }
 

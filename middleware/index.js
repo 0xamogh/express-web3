@@ -14,27 +14,32 @@ function accessLog(req, res, next) {
 }
 
 function errorLog(err, req, res, next) {
-  const { hostname, method, path, protocol } = req;
+  const { hostname, method, path, protocol } = req.isPrivate;
   console.log(`ERROR: ${method} ${protocol}://${hostname}${path} - ${err}`);
   // next(); // you can call either next or send a uniform error response
   res.status(500).send({ status: "server-error", message: err.message });
 }
 
-async function web3api(req, res, next){
+function web3api(options){
 
-    const md5 = generateMD5Hash(req.query.text);
+    
+    return async (req, res, next) => {
+    
+    console.log("🚀 ~ file: index.js ~ line 24 ~ web3api ~ req", res, req.query)
+    const md5 = generateMD5Hash(res);
     const sign = signMD5Hash(md5);
     res.setHeader('MD5Hash', md5);
     res.setHeader('Web3Signature', sign); 
     // confirm if the md5 or the actual data is to be uploaded
 
-    if(!(req.query.isPrivate.toLowerCase() === 'true')){
+    if(!(options?.isPrivate)){
         const cid = await uploadToIPFS(md5)
         res.setHeader('IPFS-CID', cid);
     }
-
-    next()
+    // res.send("web3api")
+    next()}
 }
+
 
 function configureWeb3(privateKey, ipfsGateway){
     // probably should encrypt this somehow
